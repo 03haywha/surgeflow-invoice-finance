@@ -84,6 +84,7 @@ export interface FunnelState {
   goToStep: (step: number) => void;
   setField: <K extends keyof FunnelState>(key: K, value: FunnelState[K]) => void;
   reset: () => void;
+  restartFunnel: (initialDso?: DSO | null) => void;
 }
 
 const initialState = {
@@ -123,6 +124,16 @@ export const useFunnelStore = create<FunnelState>()(
       goToStep: (step) => set({ currentStep: step }),
       setField: (key, value) => set({ [key]: value } as Partial<FunnelState>),
       reset: () => set(initialState),
+      // Full reset + open modal at step 1 — use this from any landing CTA so each
+      // attempt starts fresh (without this, persisted state restores the last
+      // currentStep, jumping returning users to the eligibility quote).
+      restartFunnel: (initialDso) =>
+        set({
+          ...initialState,
+          dso: initialDso ?? null,
+          isModalOpen: true,
+          startedAt: new Date().toISOString(),
+        }),
     }),
     { name: "surgeflow-invoice-funnel" }
   )

@@ -7,7 +7,7 @@ import { formatCurrency } from "@/lib/utils";
 import { FunnelModal } from "@/components/FunnelModal";
 
 export default function LandingPage() {
-  const { openModal, setField } = useFunnelStore();
+  const restartFunnel = useFunnelStore((s) => s.restartFunnel);
   const [counter, setCounter] = useState(31);
 
   // Live counter increments randomly to feel real
@@ -18,10 +18,8 @@ export default function LandingPage() {
     return () => clearInterval(interval);
   }, []);
 
-  const startFunnel = (dso: DSO) => {
-    setField("dso", dso);
-    openModal();
-  };
+  const startFunnel = (dso: DSO) => restartFunnel(dso);
+  const openModal = () => restartFunnel();
 
   return (
     <main className="min-h-screen bg-white text-neutral-900">
